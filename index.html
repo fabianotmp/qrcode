@@ -1,18 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aksor</title>
-    <style>
-        body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
-        #container { border: 1px solid #ccc; padding: 20px; }
-    </style>
+    <title>Horário</title>
 </head>
 <body>
-    <div id="container"></div>
+    <span></span>
+    <script>
+        const horario = document.querySelector('span');
 
-    <script src="js/qrcode.js"></script>
-    <script src="js/darkmode.js"></script>
+        async function iniciarRelogio() {
+            try {
+                const resposta = await fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo');
+                const dados = await resposta.json();
+                let tempoAtual = new Date(dados.datetime);
+
+                setInterval(() => {
+                    tempoAtual.setSeconds(tempoAtual.getSeconds() + 1);
+                    
+                    const horas = String(tempoAtual.getHours()).padStart(2, '0');
+                    const minutos = String(tempoAtual.getMinutes()).padStart(2, '0');
+                    const segundos = String(tempoAtual.getSeconds()).padStart(2, '0');
+                    
+                    horario.textContent = `${horas}:${minutos}:${segundos}`;
+                }, 1000);
+
+            } catch (erro) {
+                console.error('Falha ao buscar horário:', erro);
+            }
+        }
+
+        iniciarRelogio();
+    </script>
+
 </body>
 </html>
