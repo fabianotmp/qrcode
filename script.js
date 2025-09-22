@@ -1,24 +1,21 @@
-const horario = document.querySelector('span');
-
-async function iniciarRelogio() {
+async function buscarEGerarCodigo() {
     try {
-        const resposta = await fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo');
+        const resposta = await fetch('https://aisenseapi.com/services/v1/timestamp');
         const dados = await resposta.json();
-        let tempoAtual = new Date(dados.datetime);
+        const timestamp = dados.timestamp;
 
-        setInterval(() => {
-            tempoAtual.setSeconds(tempoAtual.getSeconds() + 1);
+        const segundos = Math.floor(timestamp / 10000);
+        const codigo = segundos % 10000;
+        const codigoFormatado = codigo.toString().padStart(4, '0');
 
-            const horas = String(tempoAtual.getHours()).padStart(2, '0');
-            const minutos = String(tempoAtual.getMinutes()).padStart(2, '0');
-            const segundos = String(tempoAtual.getSeconds()).padStart(2, '0');
-
-            horario.textContent = `${horas}:${minutos}:${segundos}`;
-        }, 1000);
-
+        console.log("Timestamp da API:", timestamp);
+        console.log("Código:", codigoFormatado);
     } catch (erro) {
-        console.error('Falha ao buscar horário:', erro);
+        console.error('Falha ao buscar dados:', erro);
     }
 }
 
-iniciarRelogio();
+setTimeout(() => {
+    buscarEGerarCodigo();
+    setInterval(buscarEGerarCodigo, 10000);
+}, 3000);
